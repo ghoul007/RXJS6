@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { filter, concatMap, mergeMap } from 'rxjs/operators';
+import { filter, concatMap, mergeMap, exhaustMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
-import { of } from 'rxjs';
+import { of, fromEvent } from 'rxjs';
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, AfterViewInit {
   form: FormGroup;
+
+  @ViewChild('submitButton') submitButton;
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -46,6 +48,15 @@ export class FormComponent implements OnInit {
         'content-type': "application/json"
       }
     }));
+  }
+
+  ngAfterViewInit(): void {
+    fromEvent(this.submitButton.nativeElement, 'click')
+      .pipe(
+        exhaustMap(() => this.saveCourse(this.form.value))
+    )
+    .subscribe(console.log)
+
   }
 
 }
