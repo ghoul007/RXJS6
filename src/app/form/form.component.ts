@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { filter, concatMap } from 'rxjs/operators';
+import { filter, concatMap, mergeMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { of } from 'rxjs';
 @Component({
@@ -32,7 +32,7 @@ export class FormComponent implements OnInit {
     this.form.valueChanges
       .pipe(
         filter(() => this.form.valid),
-        concatMap(changes => this.saveCourse(changes))
+        mergeMap(changes => this.saveCourse(changes))
       )
       .subscribe(console.log);
 
