@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of, concat } from 'rxjs';
+import { map, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,15 +11,13 @@ import { map } from 'rxjs/operators';
 export class AppComponent implements OnInit {
 
   ngOnInit() {
-    const http$ = this.createHttpObserver();
 
-    const course$ = http$.pipe(
-      map(res => res['payload'])
-    );
-    course$.subscribe(
-      courses => console.log(courses),
-      () => { },
-      () => console.log('complete'))
+    const source1$ = of(1).pipe(delay(3000));
+    const source2$ = of(2);
+
+    const result$ = concat(source1$, source2$);
+
+    result$.subscribe(res => console.log(res));
   }
   /**
    *
