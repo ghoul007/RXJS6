@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "server": "./node_modules/.bin/ts-node -P ./server/server.tsconfig.json ./server/server.ts",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
