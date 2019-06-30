@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, concat } from 'rxjs';
-import { map, delay } from 'rxjs/operators';
+import { Observable, of, concat, throwError, timer } from 'rxjs';
+import { map, delay, catchError, retryWhen, delayWhen, shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -9,15 +9,28 @@ import { map, delay } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  result$: Observable<any[]>;
 
   ngOnInit() {
 
-    const source1$ = of(1).pipe(delay(3000));
-    const source2$ = of(2);
 
-    const result$ = concat(source1$, source2$);
 
-    result$.subscribe(res => console.log(res));
+    this.result$ = this.createHttpObserver()
+      .pipe(
+        map(res => res['payload']),
+        shareReplay(),
+        retryWhen(err => {
+          debugger
+          return err.pipe(
+            delayWhen(() => timer(2000))
+          )
+        }
+        )
+        // catchError(err => {
+        // of([])
+        // return throwError(err)
+        // })
+      )
   }
   /**
    *
@@ -30,7 +43,7 @@ export class AppComponent implements OnInit {
         res => res.json()
       ).then(body => {
         observer.next(body);
-        observer.complet();
+        observer.complete();
       }).catch(err => {
         observer.error(err);
       });

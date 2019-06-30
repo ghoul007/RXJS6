@@ -37,7 +37,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
         )
         ));
 
-    this.lesson$ =   concat(this.createHttpObserver(),search$) ;
+    this.lesson$ =   concat(this.createHttpObserver(), search$) ;
   }
 
 
