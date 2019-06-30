@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { fromEvent, Observable, concat } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged, switchMap, concatMap } from 'rxjs/operators';
+import { map, debounceTime, distinctUntilChanged, switchMap, concatMap, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search',
@@ -27,9 +27,10 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const search$ = fromEvent<any>(this.search.nativeElement, 'input')
+    this.lesson$ = fromEvent<any>(this.search.nativeElement, 'input')
       .pipe(
         map(event => event.target.value),
+        startWith(''),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(search => this.createHttpObserver(search).pipe(
@@ -37,7 +38,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
         )
         ));
 
-    this.lesson$ =   concat(this.createHttpObserver(),search$) ;
+    // this.lesson$ =   concat(this.createHttpObserver(),search$) ;
   }
 
 
