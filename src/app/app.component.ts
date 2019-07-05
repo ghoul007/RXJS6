@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Store } from './store.service';
 
 @Component({
   selector: 'app-root',
@@ -9,35 +10,21 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+ constructor(private store: Store){
 
+
+ }
   ngOnInit() {
-    const http$ = this.createHttpObserver();
+    this.store.init();
+    // const http$ = this.createHttpObserver();
 
-    const course$ = http$.pipe(
-      map(res => res['payload'])
-    );
-    course$.subscribe(
-      courses => console.log(courses),
-      () => { },
-      () => console.log('complete'))
+    // const course$ = http$.pipe(
+    //   map(res => res['payload'])
+    // );
+    // course$.subscribe(
+    //   courses => console.log(courses),
+    //   () => { },
+    //   () => console.log('complete'))
   }
-  /**
-   *
-   *
-   * @memberof AppComponent
-   */
-  createHttpObserver() {
-    return Observable.create(observer => {
-      fetch('/api/courses').then(
-        res => res.json()
-      ).then(body => {
-        observer.next(body);
-        observer.complet();
-      }).catch(err => {
-        observer.error(err);
-      });
 
-    });
-
-  }
 }
